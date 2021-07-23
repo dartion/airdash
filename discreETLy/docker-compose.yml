@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  webserver:
+    image:
+    pull_policy: never
+    restart: always
+    depends_on:
+      - postgres
+    environment:
+      - LOAD_EX=n
+      - EXECUTOR=Local
+      - FERNET_KEY=AxqiwNDx7X48Um0m0MqWSb2ON_GUVXZIKw2NKccTC30==
+    logging:
+      options:
+        max-size: 10m
+        max-file: "3"
+    volumes:
+      - ./dags:/usr/local/airflow/dags
+      - ./data:/usr/local/airflow/data
+      # - ./plugins:/usr/local/airflow/plugins
+    ports:
+      - "8000:8000"
+      - "5000:8000"
+
+
+networks:
+  webserver:
+  db:

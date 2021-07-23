@@ -1,0 +1,9 @@
+language: python
+python: "3.6"
+
+services:
+  - docker
+install:
+  - docker build -t dashboard:tests -f dashboard/tests/Dockerfile .
+script:
+  - docker-compose --file dashboard/tests/docker-compose.yml up --abort-on-container-exit && docker-compose --file dashboard/tests/docker-compose.yml down

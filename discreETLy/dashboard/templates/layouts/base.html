@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Flask-MySQL">
+    <link rel="icon" href="/favicon.ico">
+
+    <title>{{ config.APP_NAME }}</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css"/>
+    <!-- Custom styles for this template -->
+  <link href="/static/vendor/fontawesome/css/fontawesome.min.css" rel="stylesheet" type="text/css">
+  <!-- Custom fonts for this template -->
+  <link href="//fonts.googleapis.com/css?family=Dosis|Exo+2" rel="stylesheet">
+  <link href="/static/css/base.css" rel="stylesheet">
+  </head>
+  <body style="padding: 1em;">
+
+    <header>
+      <img st>
+      <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-primary">
+        <a class="navbar-brand" href="#">{{ config.APP_NAME }}</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="/">AIR DASH<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item px-3">
+                <a class="nav-link" href="{{ url_for('page.etl_dashboard') }}">ETLs</a>
+            </li>
+              {% for plugin in plugins.items() %}
+                        <li class="nav-item px-3">
+                        <a class="nav-link" href="{{ url_for(plugin[0] + '.index') }}">{{ plugin[1].tab_name }}</a>
+                        </li>
+              {% endfor %}
+
+
+          </ul>
+        </div>
+      </nav>
+    </header>
+
+    <main role="main">
+        <div class="row">&nbsp;</div>
+        <div class="row">
+          <div class="col-sm-2">
+                &nbsp;
+            </div>
+            <div class="col-sm-8">
+              &nbsp;
+            </div>
+        <div class="col-sm-2">
+            <small>Page refreshed at: <b>{{ now.strftime('%H:%M:%S') }} AEST</b></small>
+        </div>
+
+        </div>
+
+        <div class="row">
+            <div class="col-sm-2">
+                &nbsp;
+            </div>
+            <div class="col-sm-8">
+                {% block site_content %}
+                {% endblock site_content %}
+            </div>
+        <div class="col-sm-2">&nbsp;</div>
+        </div>
+
+
+
+
+      <!-- FOOTER -->
+      <footer class="container">
+        <p class="float-right"><a href="#">Back to top</a></p>
+      </footer>
+    </main>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="//code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="//stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+    <!-- Just to make our placeholder images work. Don't actually copy the next line! -->
+    <script src="/static/home/holder.min.js"></script>
+  </body>
+</html>
+
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+  <base href="./">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+
+  {% block autorefresh %}<meta http-equiv="refresh" content="{{ config['REFRESH_RATE'] }}">{% endblock %}
+
+  <title>{% block title %}{% endblock %}</title>
+  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+  <!-- Icons-->
+  <link href="https://unpkg.com/@coreui/icons/css/free.min.css" rel="stylesheet">
+  <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.css" rel="stylesheet">
+  <!-- Main styles for this application-->
+  <link rel="stylesheet" href="https://unpkg.com/@coreui/coreui/dist/css/coreui.min.css">
+
+  <!-- base.css -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css')}}">
+
+  <script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+  <!-- Vega, vega-lite and vega-embedded -->
+  <script src="https://cdn.jsdelivr.net/npm/vega@4.2.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@2.6.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@3.18.1"></script>
+
+  {% block css %}{% endblock %}
+</head>
+
+<body class="app header-fixed sidebar-hidden aside-menu-fixed">
+  <header class="app-header navbar">
+    <a class="navbar-brand" href="/">
+      <img class="navbar-brand-full" src="https://image.flaticon.com/icons/png/128/439/439186.png" width="30" height="30"
+        alt="CoreUI Logo">
+      <img class="navbar-brand-minimized" src="https://image.flaticon.com/icons/png/128/439/439186.png" width="30"
+        height="30" alt="CoreUI Logo">
+      &nbsp; {{ config['COMPANY_NAME'] }} Data
+    </a>
+
+    <div class="navbarm">
+      <ul class="nav navbar-nav">
+        <li class="nav-item px-3">
+          <a class="nav-link" href="{{ url_for('page.etl_dashboard') }}">ETLs</a>
+        </li>
+        {% for plugin in plugins.items() %}
+        <li class="nav-item px-3">
+          <a class="nav-link" href="{{ url_for(plugin[0] + '.index') }}">{{ plugin[1].tab_name }}</a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <ul class="nav navbar-nav ml-auto loginrefresh">
+      <li class="nav-item refresh-info">
+
+        <small>Page refreshed at: <b>{{ now.strftime('%H:%M:%S') }} UTC</b></small>
+      </li>
+      <li class="nav-item dropdown">
+        {% if 'user' in session %}
+        <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+          <img class="img-avatar" src="{{ session.user.picture }}" alt="{{ session.user.email }}">
+        </a>
+        <div class="dropdown-menu dropdown-menu-right">
+          <div class="dropdown-header text-center">
+            <strong>Settings</strong>
+          </div>
+          <a class="dropdown-item" href="{{ url_for('page.logout') }}">
+            <i class="fa fa-lock"></i> Logout</a>
+        </div>
+        {% endif %}
+      </li>
+    </ul>
+  </header>
+  <div class="app-body">
+    <main class="main">
+      <div class="breadcrumb-container">
+        <!-- Breadcrumb-->
+        <ol class="breadcrumb">
+          {% block nav %}{% endblock %}
+          <!-- Breadcrumb Menu-->
+          <li class="breadcrumb-menu d-md-down-none">
+          </li>
+        </ol>
+        <div class="app-help">
+          ?
+        </div>
+      </div>
+      <div class="container-fluid">
+        {% block body %}{% endblock %}
+      </div>
+    </main>
+
+    <!-- help model hidden -->
+    <div class="help-modal">
+      <p><b>ETLs</b> - information about the status of all ETL processes (DAGs) available in airflow database. If tables are defined this view shows number of processed tables. If tables information
+      is missing, it shows number of tasks completed.</p>
+      <p><b>Tables</b> - information available only it tables mapping is defined in a yaml file. It shows current status of processing related to a particular table.</p>
+      <p><b>Plugins</b> - any information provided through plugins system available in discreETLy with appropriate tab name.</p>
+      <p>For more information contact the team responsible for maintaining the dashboard or search the <a href="https://github.com/Wikia/discreETLy">documentation</a>.</p>
+    </div>
+  </div>
+  <footer class="app-footer" style="display: none">
+    <div>
+      <a href="https://coreui.io">CoreUI</a>
+      <span>&copy; 2018 creativeLabs.</span>
+    </div>
+    <div class="ml-auto">
+      <span>Powered by</span>
+      <a href="https://coreui.io">CoreUI</a>
+    </div>
+  </footer>
+  <!-- CoreUI and necessary plugins-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/perfect-scrollbar@1.4.0/dist/perfect-scrollbar.common.min.js"></script>
+  <script src="https://unpkg.com/@coreui/coreui/dist/js/coreui.min.js"></script>
+  <!-- Plugins and scripts required by this view-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-trendline@0.0.3/chartjs-plugin-trendline.js"></script>
+  <script src="{{ url_for('static', filename='vendors/@coreui/coreui-plugin-chartjs-custom-tooltips/js/custom-tooltips.min.js') }}"></script>
+  {% block charts %}{% endblock %}
+  <script>
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip()
+    })
+  </script>
+  <script>
+    var helpButton = document.querySelector(".app-help");
+    var helpInfo = document.querySelector(".help-modal");
+
+    helpButton.addEventListener("click", (_) => {
+      helpInfo.style.visibility === "visible" ? helpInfo.style.visibility = "hidden" : helpInfo.style.visibility = "visible"
+    });
+  </script>
+  {% block js %}{% endblock %}
+</body>
+
+</html>

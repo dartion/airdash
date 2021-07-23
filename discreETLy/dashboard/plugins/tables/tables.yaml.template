@@ -1,0 +1,25 @@
+- name: popular_raw_table
+  db: dbname
+  dag_id: my_dag
+  task_id: popular_raw_table_insert
+
+- name: fact_table
+  db: dbname
+  dag_id: my_dag
+  task_id: fact_table_insert
+  uses: dbname.popular_raw_table
+
+# declaring a table with a specific cadence
+- name: frequently_updated_table
+  db: dbname
+  dag_id: my_dag
+  task_id: update_daily_frequently_updated_table
+  period:
+    id: 1
+    name: daily
+
+- name: rollup_table_daily
+  db: dbname
+  dag_id: my_dag
+  task_id: rollup_table_insert
+  uses: dbname.frequently_updated_table.daily
