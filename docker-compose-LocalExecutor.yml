@@ -1,0 +1,69 @@
+version: '3.8'
+services:
+    postgres:
+        image: postgres:9.6
+        environment:
+            - POSTGRES_USER=airflow
+            - POSTGRES_PASSWORD=airflow
+            - POSTGRES_DB=airflow
+            - FERNET_KEY=AxqiwNDx7X48Um0m0MqWSb2ON_GUVXZIKw2NKccTC30==
+        logging:
+            options:
+                max-size: 10m
+                max-file: "3"
+
+    webserver:
+        image: airflow_2.1.0
+        pull_policy: never
+        restart: always
+        depends_on:
+            - postgres
+        environment:
+            - LOAD_EX=y
+            - EXECUTOR=Local
+            - FERNET_KEY=AxqiwNDx7X48Um0m0MqWSb2ON_GUVXZIKw2NKccTC30==
+        logging:
+            options:
+                max-size: 10m
+                max-file: "3"
+        volumes:
+            - ./dags:/usr/local/airflow/dags
+            - ./data:/usr/local/airflow/data
+            # - ./plugins:/usr/local/airflow/plugins
+        ports:
+            - "8082:8080"
+        command: webserver
+        healthcheck:
+            test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]"]
+            interval: 30s
+            timeout: 30s
+            retries: 3
+
+
+    flask:
+        image: airdash:latest
+        pull_policy: never
+        restart: always
+        depends_on:
+            - postgres
+            - webserver
+        logging:
+            options:
+                max-size: 10m
+                max-file: "3"
+        volumes:
+            - ./discreETLy:/app
+            - ./dags:/usr/local/airflow/dags
+            - ./data:/usr/local/airflow/data
+            # - ./plugins:/usr/local/airflow/plugins
+        environment:
+            - AIRFLOW_DB_HOST=postgres
+            - AIRFLOW_USERNAME=airflow
+            - AIRFLOW_PASSWORD=airflow
+            - AIRFLOW_DATABASE=airflow
+        ports:
+            - "8000:8000"
+networks:
+    postgres:
+    webserver:
+    flask:

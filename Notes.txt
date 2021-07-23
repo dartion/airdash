@@ -1,0 +1,46 @@
+Notes
+- Good practices
+1. All tasks must me atomic. Each task performs only one action. Having two actions in one task may lead to one failing and the whole task failing.
+
+2. All tasks must be idempotent. All tasks have similar inputs, for example running a backdated task for a particular date must return the same results as the task run today(same date). Rerunning a task should not alter the result in anyway.
+
+- Technical notes
+1. {{ execution_date }} is one of the variable who's value is known at the run time. It is a Pendulum datetime object.
+
+2. Templating in Bash Operator can be used using Jinja syntax, however, when using PythonOperator jinja templating can be used when using _python_callable function instead.
+
+3. Values containing strings can be templated in PythonOperator (Exception to the above condition). Example
+
+def _get_data(year, month, day, hour, output_path, **_):
+   url = (
+		"https://dumps.wikimedia.org/other/pageviews/" f"{year}/{year}-{month:0>2}/” f"pageviews-{year}{month:0>2}{day:0>2}-{hour:0>2}0000.gz"
+	)
+	request.urlretrieve(url, output_path)
+
+get_data = PythonOperator(
+   task_id="get_data",
+   python_callable=_get_data,
+   op_kwargs={
+		"year": "{{ execution_date.year }}",
+		"month": "{{ execution_date.month }}",
+		"day": "{{ execution_date.day }}",
+		"hour": "{{ execution_date.hour }}",
+		"output_path": "/tmp/wikipageviews.gz",
+	},
+	dag=dag,
+)
+
+4. airflow tasks render [dag id] [task id] [desired execution date] can be used to check rendered templates or can use Rendered templates on the Airflow UI
+
+
+
+Coding issues
+1. If the FERNET key decryption is not happening run the following command on the webserver container
+`python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"`
+
+Copy the key onto airflow.cfg and add an environment variable FERNET_KEY on docker-compose files for the services
+
+Delete the containers 
+docker rm <container name> <container name>
+
+Docker compose up the containers

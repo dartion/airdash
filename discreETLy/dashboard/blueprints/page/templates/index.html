@@ -1,0 +1,80 @@
+{% extends 'layouts/base.html' %}
+{% import 'macros/common.html' as common with context %}
+
+{% block title %}{{ config['COMPANY_NAME'] }} Data{% endblock %}
+
+{% block nav %}
+    <li class="breadcrumb-item active"><a href="/">Home</a></li>
+{% endblock %}
+
+{% block site_content %}
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+
+    <div class="row">
+    <div class="col-6">
+    
+    {% set etl_failure = etl_summary | selectattr('state', 'eq', 'failed') | list | count > 0 %}
+
+
+
+    {% if tables %}
+    <div class="row">
+        {% set tables_failure = tables | selectattr('state', 'eq', 'failed') | list | count > 0 %}
+
+
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header{% if tables_failure %} text-white etl-danger {% endif %}">
+                    <b>Tables daily load status</b>
+                </div>
+                <div class="card-body">
+                    {% if tables_failure %}
+                        <h4>There are tables that failed to load toady, check <a href="{{ url_for('tables.index') }}">tables dashboard</a></h4>
+                    {% endif %}
+                    {% set today_tables = tables|
+                                selectattr('state', 'eq', 'success')|
+                                selectattr('last_update', 'ne', none)|
+                                selectattr('last_update', 'gt', now.replace(hour=0, minute=0, second=0))|
+                                list|
+                                count %}
+                    <h5 class="card-title">Daily load progress:
+                        <p class="status-box etl-{% if today_tables == tables|count %}success{% else %}issue{% endif %}">
+                            <b>{{ (today_tables/tables|count * 100)|int }}%</b>
+                        </p>
+                    </h5>
+                    <p>Total tables: {{ tables|count }}</p>
+                    <p>Tables updated today: {{ today_tables }}</p>
+                    {% set stale_tables = tables|selectattr('last_update', 'ne', none)|selectattr('last_update', 'lt', now.replace(hour=0, minute=0, second=0))|list %}
+                    {% if stale_tables|count > 0 %}
+                        <p><b>Tables awaiting completion</b>:
+                        <ul>
+                            {% for table in stale_tables|batch(5)|first %}
+                                <li>{{ table.id }}</li>
+                            {% endfor %}
+                            {% if stale_tables|count > 5 %}<li>...</li>{% endif %} {# we're showing 5 tables max #}
+                        </ul>
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+    {% endif %}
+    </div>
+    
+    <div class="col-6">
+        <h2>Important links</h2>
+        <ul>
+            {% for link in links %}
+                <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+    
+    </div>
+    
+    
+    
+{% endblock %}

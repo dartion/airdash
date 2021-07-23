@@ -1,0 +1,90 @@
+# This is a configuration file for dashboard application. This file is a standard python file, so if needed
+# it supports all python operations, e.g. os package for working with operating system specific features.
+
+import os
+
+ENV_VAR_PREFIX = os.getenv('ENV_VAR_PREFIX', '')
+DEBUG = not 'PROD' in ENV_VAR_PREFIX
+
+# Airflow database
+# Define configuration options required to connect to your Airflow database instance.
+# This configuration file assumes those options are provided through environment variables.
+# Database host machine
+# AIRFLOW_DB_HOST = os.environ['AIRFLOW_DB_HOST']
+# Database user
+# AIRFLOW_USERNAME = os.environ['AIRFLOW_USERNAME']
+# User password
+# AIRFLOW_PASSWORD = os.environ['AIRFLOW_PASSWORD']
+# Database instance name
+# AIRFLOW_DATABASE = os.environ['AIRFLOW_DATABASE']
+
+# This variable holds DNS address definition, e.g 'https://airflow.fandom.com'
+# AIRFLOW_WEBSERVER_BASE_URL = os.environ['AIRFLOW_WEBSERVER_BASE_URL']
+
+# InfluxDB
+# The dashboard supports retriving data from an InfluxDB instance. This part of configuration is entirely optional.
+# Leave this section commented out if you want to ignore InfluxDB functionality.
+# INFLUXDB_HOST = os.environ['INFLUXDB_HOST']
+# INFLUXDB_USERNAME = os.environ['INFLUXDB_USERNAME']
+# INFLUXDB_PASSWORD = os.environ['INFLUXDB_PASSWORD']
+# INFLUXDB_DATABASE = os.environ['INFLUXDB_DATABASE']
+
+# Prometheus
+# The dashboard supports retriving data from an Prometheus instance. This part of configuration is entirely optional.
+# Leave this section commented out if you want to ignore Prometheus functionality.
+# PROMETHEUS_HOST = os.environ['PROMETHEUS_HOST']
+
+# OAuth
+# The dashboard supports authorization through Google OAuth. This part of configuration is entirely optional.
+# Leave this section commented out if you want to ignore OAuth functionality.
+# GOOGLE_CLIENT_ID = os.environ['OAUTH_CLIENT_ID']
+# GOOGLE_CLIENT_SECRET = os.environ['OAUTH_SECRET']
+# Use domain that is used for OAuth services at your company, e.g. 'fandom.com'
+# You can also use a list ['domain1.com', 'domain2.com']
+# OAUTH_DOMAIN = 
+
+# Application secret
+# Secret key used for making the application secure. If deployed on production or other publicly available service it is advisable
+# to provide secret. If tested locally the default can be used.
+SECRET_KEY = os.environ.get('SECRET_KEY') or '8FF5F14DC7DBF90FDE769C3BF7FDCFA16FEF3D1E'
+
+# Company name
+# This name will be displayed on the header of the dashboard
+COMPANY_NAME = 'ACME'
+
+# Plugins
+# DiscreETLy supports views/functionalities customization with plugin system. The following list
+# describes what plugins are enabled. They are stored in dashboard/plugins directory with the corresponding
+# documentation.
+ENABLED_PLUGINS= ['tables', 'hello_world']
+
+# Refresh rate - time in seconds when a page gets refreshed and pulls new data
+REFRESH_RATE=300
+
+# Plugin-specific configuration: table_descriptions
+# The following lines enable AWS Glue Data catalogue as a source of the table descritpions. This dataprovider
+# requires AWS region, access key and secret key to be provided.
+#TABLE_DESCRIPTIONS_SERVICE = 'dashboard.plugins.table_descriptions.dataproviders.GlueDescriptionService'
+#TABLE_DESCRIPTIONS_SERVICE_PARAMS = {
+#    'region_name': 'us-east-1',
+#    'aws_access_key_id': '<aws_access_key_id>',
+#    'aws_secret_access_key': '<aws_secret_access_key>'
+#}
+#TABLE_DESCRIPTIONS_TTL = 300 # 5 minutes is the default
+
+# The following lines configure s3_usage plugin. See plugin documentation for more information.
+#S3_USAGE_PARAMS = {
+#    'buckets_regexp': '^data-.*$',
+#    'aws_access_key_id': '......'
+#    'aws_secret_access_key': '....'
+#}
+
+# The following lines configure athena_usage plugin. See plugin documentation for more information.
+#ATHENA_USAGE_PARAMS = {
+#    'QUERIES_TABLE': '....',
+#    'region_name': '....'
+#    'aws_access_key_id': '....',
+#    'aws_secret_access_key': '....',
+#}
+
+
